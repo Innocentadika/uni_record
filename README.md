@@ -4,14 +4,21 @@ Simple attendance failure mitigations
 CREATE TABLE student_details (
     id INT AUTO_INCREMENT PRIMARY KEY,
     roll_no VARCHAR(20) NOT NULL UNIQUE,
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL,
+    student_id VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TABLE course_details (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    semester INT NOT NULL,
     course_id VARCHAR(20) UNIQUE,
-    title VARCHAR(50),
-    credit INT
+    session_id ENUM('online', 'part-time', 'full-time') NOT NULL,
+    current_course VARCHAR(255) NOT NULL,
+    assignment1 DECIMAL(5,2) DEFAULT 0.00,
+    assignment2 DECIMAL(5,2) DEFAULT 0.00,
+    cat DECIMAL(5,2) DEFAULT 0.00,
+    course_grade DECIMAL(5,2) DEFAULT 0.00, 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE faculty_details (
@@ -29,32 +36,30 @@ CREATE TABLE session_details (
 );
 
 CREATE TABLE course_registration (
-    student_id VARCHAR(255) NOT NULL,
-    course_id VARCHAR(255) NOT NULL,
-    session_id VARCHAR(10) NOT NULL,
+    student_id VARCHAR(50) NOT NULL,
+    course_id VARCHAR(20) NOT NULL,
+    session_id ENUM('online', 'part-time', 'full-time') NOT NULL,
     current_course VARCHAR(255) NOT NULL,
     department VARCHAR(255) NOT NULL,
     PRIMARY KEY (student_id, course_id, session_id)
 );
 
 CREATE TABLE course_allotment (
-    faculty_id VARCHAR(50),
     course_id VARCHAR(20),
-    session_id INT,
-    PRIMARY KEY (faculty_id, course_id, session_id)
+    session_id ENUM('online', 'part-time', 'full-time') NOT NULL,
+    PRIMARY KEY (course_id, session_id)
 );
 
 CREATE TABLE attendance_details (
-     id INT AUTO_INCREMENT PRIMARY KEY,
-    faculty_id VARCHAR(255) NOT NULL,
-    course_id VARCHAR(255) NOT NULL,
-    session_id VARCHAR(10) NOT NULL,
-    student_id VARCHAR(255) NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    course_id VARCHAR(20) NOT NULL,
+    session_id ENUM('online', 'part-time', 'full-time') NOT NULL,
+    student_id VARCHAR(50) NOT NULL,
     on_date DATE NOT NULL,
     status VARCHAR(50) NOT NULL,
-    FOREIGN KEY (faculty_id) REFERENCES faculty_details(student_id),
     FOREIGN KEY (student_id) REFERENCES student_details(student_id)
 );
+
 
 ## 2. if you want to update directly on sql run this to automatically propagate records first
 DELIMITER $$
