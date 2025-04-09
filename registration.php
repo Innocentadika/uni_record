@@ -26,14 +26,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif ($password !== $confirm_password) {
         $error_message = "Passwords do not match!";
     } else {
-        // Check if student_id already exists
-        $checkQuery = "SELECT student_id FROM student_details WHERE student_id = :student_id";
+        // Check if student_id already exists in the faculty_details table
+        $checkQuery = "SELECT student_id FROM faculty_details WHERE student_id = :student_id";
         $stmt = $dbo->conn->prepare($checkQuery);
         $stmt->execute([':student_id' => $student_id]);
 
         if ($stmt->fetch()) {
-            $error_message = "This student is already registered!";
+            $error_message = "This student is already registered as faculty!";
         } else {
+            // Hash the password before storing it in the database
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             try {
                 // Start transaction
@@ -43,77 +44,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $facultyInsert = "INSERT INTO faculty_details (student_id, password, name) 
                                   VALUES (:student_id, :password, :name)";
                 $facultyStmt = $dbo->conn->prepare($facultyInsert);
-                $facultyStmt->execute([
-                    ":student_id" => $student_id,
-                    ":password" => $hashedPassword,
-                    ":name" => $name
-                ]);
+                $facultyStmt->execute([":student_id" => $student_id, ":password" => $hashedPassword, ":name" => $name]);
 
-                // Insert into student_details
+                // Insert into student_details (this seems to be for student-specific data)
                 $studentInsert = "INSERT INTO student_details (student_id, roll_no, name) 
                                   VALUES (:student_id, :student_id, :name)";
                 $studentStmt = $dbo->conn->prepare($studentInsert);
-                $studentStmt->execute([
-                    ":student_id" => $student_id,
-                    ":name" => $name
-                ]);
+                $studentStmt->execute([":student_id" => $student_id, ":name" => $name]);
 
                 // Insert into course_registration
                 $courseInsert = "INSERT INTO course_registration (student_id, course_id, session_id, current_course, department) 
                                  VALUES (:student_id, :course_id, :session_id, :current_course, :department)";
                 $courseStmt = $dbo->conn->prepare($courseInsert);
-                $courseStmt->execute([
-                    ":student_id" => $student_id,
-                    ":course_id" => $course_id,
-                    ":session_id" => $session_id,
-                    ":current_course" => $current_course,
-                    ":department" => $department
-                ]);
+                $courseStmt->execute([":student_id" => $student_id, ":course_id" => $course_id, ":session_id" => $session_id, ":current_course" => $current_course, ":department" => $department]);
 
                 // Insert into attendance_details
                 $attendanceInsert = "INSERT INTO attendance_details (course_id, session_id, student_id, on_date, status) 
                                      VALUES (:course_id, :session_id, :student_id, CURDATE(), 'PRESENT')";
                 $attendanceStmt = $dbo->conn->prepare($attendanceInsert);
-                $attendanceStmt->execute([
-                    ":student_id" => $student_id,
-                    ":course_id" => $course_id,
-                    ":session_id" => $session_id
-                ]);
+                $attendanceStmt->execute([":student_id" => $student_id, ":course_id" => $course_id, ":session_id" => $session_id]);
 
-                // Check if course_details exists for same course_id and session_id
+                // Check if course_details exists for the same course_id and session_id
                 $checkCourse = "SELECT 1 FROM course_details WHERE course_id = :course_id AND session_id = :session_id";
                 $checkCourseStmt = $dbo->conn->prepare($checkCourse);
-                $checkCourseStmt->execute([
-                    ":course_id" => $course_id,
-                    ":session_id" => $session_id
-                ]);
+                $checkCourseStmt->execute([":course_id" => $course_id, ":session_id" => $session_id]);
 
                 if (!$checkCourseStmt->fetch()) {
                     $courseDetailsInsert = "INSERT INTO course_details (semester, course_id, session_id, current_course) 
                                             VALUES (:semester, :course_id, :session_id, :current_course)";
                     $courseDetailsStmt = $dbo->conn->prepare($courseDetailsInsert);
-                    $courseDetailsStmt->execute([
-                        ":semester" => $semester,
-                        ":course_id" => $course_id,
-                        ":session_id" => $session_id,
-                        ":current_course" => $current_course
-                    ]);
+                    $courseDetailsStmt->execute([":semester" => $semester, ":course_id" => $course_id, ":session_id" => $session_id, ":current_course" => $current_course]);
                 }
 
                 // Insert into session_details
                 $sessionInsert = "INSERT INTO session_details (semester, year, student_id) 
                                   VALUES (:semester, :year, :student_id)";
                 $sessionStmt = $dbo->conn->prepare($sessionInsert);
-                $sessionStmt->execute([
-                    ":semester" => $semester,
-                    ":year" => $year,
-                    ":student_id" => $student_id
-                ]);
+                $sessionStmt->execute([":semester" => $semester, ":year" => $year, ":student_id" => $student_id]);
 
                 // Commit transaction
                 $dbo->conn->commit();
                 $error_message = "Student and course data registered successfully!";
             } catch (PDOException $e) {
+                // Rollback transaction in case of error
                 $dbo->conn->rollBack();
                 $error_message = "Error during registration: " . $e->getMessage();
             }

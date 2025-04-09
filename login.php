@@ -1,87 +1,66 @@
 <?php
-session_start();
-$path = $_SERVER['DOCUMENT_ROOT'];
-require_once $path . "/schoolpro/database/database.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/schoolpro/database/database.php";
 
 $dbo = new Database();
-
-// Test database connection
-try {
-    $dbo->conn->query("SELECT 1");
-} catch (PDOException $e) {
-    echo json_encode(['status' => 'Database connection failed: ' . $e->getMessage()]);
-    exit;
-}
-
+$student_id = $password = "";
 $error_message = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == "verifyUser") {
-    $user_name = trim($_POST['user_name']);
-    $password = trim($_POST['password']);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $student_id = trim($_POST['student_id'] ?? '');
+    $password = trim($_POST['password'] ?? '');
 
-    if (empty($user_name) || empty($password)) {
-        echo json_encode(['status' => 'Username and password are required!']);
-        exit;
+    if (empty($student_id) || empty($password)) {
+        $error_message = "Student ID and password are required!";
     } else {
-        $query = "SELECT * FROM faculty_details WHERE user_name = :user_name LIMIT 1";
-        $stmt = $dbo->conn->prepare($query);
-        $stmt->bindParam(':user_name', $user_name);
-        $stmt->execute();
+        $checkQuery = "SELECT student_id, password FROM faculty_details WHERE student_id = :student_id";
+        $stmt = $dbo->conn->prepare($checkQuery);
+        $stmt->execute([':student_id' => $student_id]);
 
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_name'] = $user['user_name'];
-
-            echo json_encode(['status' => 'ALL OK']);
+            header("Location: dashboard.php"); 
             exit;
         } else {
-            echo json_encode(['status' => 'Invalid username or password!']);
-            exit;
+            $error_message = "Invalid student ID or password. Please try again.";
         }
     }
 }
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/login.css">
-    <link rel="stylesheet" href="css/loader.css">
-    <title>LoginPage</title>
+    <title>Login</title>
+    <link rel="stylesheet" href="css/registration.css">
 </head>
 <body>
-    <div class="loginform">
-        <div class="inputgroup topmarginlarge">
-            <input type="text" id="txtUsername" name="user_name" required>
-            <label for="txtUsername" id="lblUsername">USER NAME</label>
-        </div>
+    <div class="form-container">
+        <h1>Login</h1>
 
-        <div class="inputgroup topmarginlarge">
-            <input type="password" id="txtPassword" name="password" required>
-            <label for="txtPassword" id="lblPassword">PASSWORD</label>
-        </div>
+        <form id="loginForm" action="" method="POST">
+            <div class="input-group">
+                <label for="student_id">Student ID:</label>
+                <input type="text" id="student_id" name="student_id" placeholder="Enter your student ID" required>
+            </div>
 
-        <div class="divcallforaction topmarginlarge">
-            <button type="button" class="btnlogin inactivecolor" id="btnLogin">LOGIN</button>
-        </div>  
+            <div class="input-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
 
-        <div class="diverror topmarginlarge" id="diverror">
-            <label class="errormessage" id="errormessage"><?php echo $error_message; ?></label>
-        </div>
+            <div class="form-actions">
+                <button type="submit">Login</button>
+            </div>
+
+            <?php if ($error_message != ""): ?>
+                <div id="error-message" class="error-message"><?php echo $error_message; ?></div>
+            <?php endif; ?>
+        </form>
     </div>
 
-    <div class="lockscreen" id="lockscreen">
-        <div class="spinner" id="spinner"></div>
-        <label class="lblwait topmargin" id="lblwait">PLEASE WAIT</label>
-    </div>
-
-    <script src="js/jquery.js"></script>
     <script src="js/login.js"></script>
 </body>
 </html>

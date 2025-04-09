@@ -1,160 +1,68 @@
-*
-{
-    margin:0;
-    padding:0;
-    box-sizing: border-box;
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
 }
 
-body{
-    height:100vh;
-    background-color: rgb(19, 20, 19);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
 
-.loginform
-{
-    width:min(450px,95%);
-    height: 580px;
-    border:solid 1px blue;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color:transparent;
-    border-radius:10px;
-    transition: all 1s;
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
 }
 
-.loginform:hover{
-    box-shadow: 0 0 100px 0px rgb(121, 97, 239),0 0 400px 10px rgb(121, 97, 239);
-    animation: blink 1s infinite;
-    background-color: rgb(47, 45, 45);
-}
-@keyframes blink {
-    0%,100%{
-        box-shadow: 0 0 100px 0px rgb(121, 97, 239),0 0 400px 10px rgb(121, 97, 239);
-    }
-    40%,50%,60%
-    {
-        box-shadow: 0 0 50px 0px rgb(121, 97, 239),0 0 100px 0px rgb(121, 97, 239);
-    }
+.frm-group {
+    margin-bottom: 15px;
 }
 
-.inputgroup
-{
-    position:relative; 
-    height:50px;
-    width:85%;  
+.frm-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
 }
 
-.inputgroup input
-{
-    position:absolute;
-    width:100%;
-    height:45px;
-    background: transparent;
-    outline:none;
-    border-left:none;
-    border-right:none;
-    border-top:none;
-    border-bottom:solid 1px red;
-    color:white;
-    font-size: 20px;
-    transition: all 200ms;
+.frm-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    color: #333;
 }
 
-.inputgroup label
-{
-    position:absolute;
-    transition: all 200ms;
-    color:red;
+.frm-group input:focus {
+    border-color: #007bff;
+    outline: none;
 }
 
-.inputgroup input:hover +label,
-.inputgroup input:focus +label,
-.inputgroup input:valid +label
-{
-    transform: translateY(-20px);
-    color:rgb(0, 85, 255);
-}
-.inputgroup input:hover ,
-.inputgroup input:focus ,
-.inputgroup input:valid 
-{
-    
-    border-bottom:solid 1px rgb(0, 85, 255);
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
 }
 
-.topmargin{
-    margin-top: 50px;
-}
-.topmarginlarge{
-    margin-top: 80px;
+button:hover {
+    background-color: #0056b3;
 }
 
-.divcallforaction
-{
-    width:85%;
-    height:45px;
-    display: flex;
-    justify-content: end;
-    align-items: center;
-}
-.btnlogin
-{
-    border:solid 1px blue;
-    width:150px;
-    height:45px;
-    padding:5px;
-    border-radius: 5px;
-    
-    color:white;
-    transition: all 200ms;
-}
-.btnlogin:hover{
-    box-shadow: 0 0 100px rgb(242, 88, 201);
-    transform: translateY(-5px);
-}
-.inactivecolor
-{
-    background-color: rgb(190, 22, 22);
-}
-.activecolor
-{
-    background-color: rgb(50, 168, 247);
-}
-
-.diverror
-{
-    background-color: transparent;
-    color:white;
-    height:45px;
-    width:85%;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    visibility: hidden;
-    opacity: 0;
-    transition: all 1s;
-    letter-spacing: 1px;
-}
-.applyerrordiv
-{
-    visibility: visible;
-    opacity: 1;
-    animation:falldown 1s linear;
-}
-@keyframes falldown {
-    0%{opacity: 0;transform: translateY(-100px);}
-    49%{opacity: 1;transform: translateY(0px);letter-spacing: 1px;}
-    50%{opacity: 1;transform: translateY(0px);letter-spacing: 3px;}
-    55%{opacity: 1;transform: translateY(0px);letter-spacing: 1px;}
-    60%{opacity: 1;transform: translateY(-50px);}
-    80%{opacity: 1;transform: translateY(0px);}
-    85%{opacity: 1;transform: translateY(-10px);}
-    100%{opacity: 1;transform: translateY(0px);}
+.error-message {
+    color: #ff0000;
+    margin-bottom: 15px;
+    text-align: center;
 }

@@ -32,8 +32,7 @@ CREATE TABLE session_details (
     id INT AUTO_INCREMENT PRIMARY KEY,
     student_id VARCHAR(255) NOT NULL,
     year INT,
-    semester INT NOT NULL,
-    UNIQUE (student_id, year, semester)
+    semester INT NOT NULL
 );
 
 CREATE TABLE course_registration (
