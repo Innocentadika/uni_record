@@ -27,23 +27,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         try {
-            $facultyInsert = "INSERT INTO faculty_details (student_id, password, name) 
-                              VALUES (:student_id, :password, :name)";
-            $facultyStmt = $dbo->conn->prepare($facultyInsert);
-            $facultyStmt->execute([
-                ":student_id" => $student_id,
-                ":password" => $hashedPassword,
-                ":name" => $name
-            ]);
-
-            $studentInsert = "INSERT INTO student_details (roll_no, name) 
-                              VALUES (:student_id, :name)";
+            // Insert into student_details table
+            $studentInsert = "INSERT INTO student_details (student_id, roll_no, name) 
+                              VALUES (:student_id, :student_id, :name)";
             $studentStmt = $dbo->conn->prepare($studentInsert);
             $studentStmt->execute([
                 ":student_id" => $student_id,
                 ":name" => $name
             ]);
 
+            // Insert into course_registration table
             $courseInsert = "INSERT INTO course_registration (student_id, course_id, session_id, current_course, department) 
                              VALUES (:student_id, :course_id, :session_id, :current_course, :department)";
             $courseStmt = $dbo->conn->prepare($courseInsert);
@@ -55,8 +48,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ":department" => $department
             ]);
 
-            $attendanceInsert = "INSERT INTO attendance_details (faculty_id, course_id, session_id, student_id, on_date, status) 
-                                 VALUES ('DEFAULT_FACULTY_ID', :course_id, :session_id, :student_id, CURDATE(), 'PRESENT')";
+            // Insert into attendance_details table
+            $attendanceInsert = "INSERT INTO attendance_details (course_id, session_id, student_id, on_date, status) 
+                                 VALUES (:course_id, :session_id, :student_id, CURDATE(), 'PRESENT')";
             $attendanceStmt = $dbo->conn->prepare($attendanceInsert);
             $attendanceStmt->execute([
                 ":student_id" => $student_id,
@@ -64,6 +58,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ":session_id" => $session_id
             ]);
 
+            // Insert into course_details table
+            $courseInsert = "INSERT INTO course_details (semester, course_id, session_id, current_course) 
+                             VALUES (:semester, :course_id, :session_id, :current_course)";
+            $courseStmt = $dbo->conn->prepare($courseInsert);
+            $courseStmt->execute([
+                ":semester" => $semester,
+                ":course_id" => $course_id,
+                ":session_id" => $session_id,
+                ":current_course" => $current_course
+            ]);
+
+            // Insert into session_details table
             $sessionInsert = "INSERT INTO session_details (semester, year) 
                               VALUES (:semester, :year)";
             $sessionStmt = $dbo->conn->prepare($sessionInsert);
@@ -72,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ":year" => $year
             ]);
 
-            $error_message = "Faculty member and related data registered successfully!";
+            $error_message = "Student and course data registered successfully!";
 
         } catch (PDOException $e) {
             $error_message = "Error: " . $e->getMessage();
@@ -121,7 +127,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div class="input-group">
                 <label for="session_id">Active Session:</label>
-                <input type="number" id="session_id" name="session_id" placeholder="1=full time & 2=online" min="1" max="2" value="<?php echo htmlspecialchars($session_id); ?>" required>
+                <select class="slt" id="session_id" name="session_id" required>
+                    <option value="" disabled selected>Select session</option>
+                    <option value="online" <?php echo $session_id == 'online' ? 'selected' : ''; ?>>Online</option>
+                    <option value="part-time" <?php echo $session_id == 'part-time' ? 'selected' : ''; ?>>Part-time</option>
+                    <option value="full-time" <?php echo $session_id == 'full-time' ? 'selected' : ''; ?>>Full-time</option>
+                </select>
             </div>
 
             <div class="enrolment">
