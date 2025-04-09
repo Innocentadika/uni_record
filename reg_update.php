@@ -101,6 +101,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update'])) {
                 ":department" => $department
             ]);
 
+            // Update course details
+            $courseUpdate = "UPDATE course_details SET course_id = :course_id, session_id = :session_id, semester = :semester WHERE student_id = :student_id";
+            $courseStmt = $dbo->conn->prepare($courseUpdate);
+            $courseStmt->execute([
+                ":student_id" => $student_id,
+                ":course_id" => $course_id,
+                ":session_id" => $session_id,
+                ":semester" => $semester
+            ]);
+
             // Update session details
             $sessionUpdate = "UPDATE session_details SET semester = :semester, year = :year WHERE student_id = :student_id";
             $sessionStmt = $dbo->conn->prepare($sessionUpdate);
