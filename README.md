@@ -11,7 +11,7 @@ CREATE TABLE student_details (
 CREATE TABLE course_details (
     id INT AUTO_INCREMENT PRIMARY KEY,
     semester INT NOT NULL,
-    course_id VARCHAR(20) UNIQUE,
+    course_id VARCHAR(20),
     session_id ENUM('online', 'part-time', 'full-time') NOT NULL,
     current_course VARCHAR(255) NOT NULL,
     assignment1 DECIMAL(5,2) DEFAULT 0.00,
@@ -30,9 +30,10 @@ CREATE TABLE faculty_details (
 
 CREATE TABLE session_details (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id VARCHAR(255) NOT NULL,
     year INT,
     semester INT NOT NULL,
-    UNIQUE (year, semester)
+    UNIQUE (student_id, year, semester)
 );
 
 CREATE TABLE course_registration (
