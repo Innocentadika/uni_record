@@ -64,16 +64,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $attendanceStmt = $dbo->conn->prepare($attendanceInsert);
                 $attendanceStmt->execute([":student_id" => $student_id, ":course_id" => $course_id, ":session_id" => $session_id]);
 
-                // Check if course_details exists for the same course_id and session_id
-                $checkCourse = "SELECT 1 FROM course_details WHERE course_id = :course_id AND session_id = :session_id";
+                // Check if course_details exists for the same student_id and session_id
+                $checkCourse = "SELECT 1 FROM course_details WHERE student_id = :student_id AND session_id = :session_id";
                 $checkCourseStmt = $dbo->conn->prepare($checkCourse);
-                $checkCourseStmt->execute([":course_id" => $course_id, ":session_id" => $session_id]);
+                $checkCourseStmt->execute([":student_id" => $student_id, ":session_id" => $session_id]);
 
                 if (!$checkCourseStmt->fetch()) {
-                    $courseDetailsInsert = "INSERT INTO course_details (semester, course_id, session_id, current_course) 
-                                            VALUES (:semester, :course_id, :session_id, :current_course)";
+                    $courseDetailsInsert = "INSERT INTO course_details (semester, course_id, session_id, student_id) 
+                                            VALUES (:semester, :course_id, :session_id, :student_id)";
                     $courseDetailsStmt = $dbo->conn->prepare($courseDetailsInsert);
-                    $courseDetailsStmt->execute([":semester" => $semester, ":course_id" => $course_id, ":session_id" => $session_id, ":current_course" => $current_course]);
+                    $courseDetailsStmt->execute([":semester" => $semester, ":course_id" => $course_id, ":session_id" => $session_id, ":student_id" => $student_id]);
                 }
 
                 // Insert into session_details
