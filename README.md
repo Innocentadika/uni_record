@@ -25,7 +25,7 @@ CREATE TABLE faculty_details (
     id INT AUTO_INCREMENT PRIMARY KEY,
     student_id VARCHAR(50) UNIQUE,
     name VARCHAR(100),
-    password VARCHAR(50)
+    password VARCHAR(255)
 );
 
 CREATE TABLE session_details (
