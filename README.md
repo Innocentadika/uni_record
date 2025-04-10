@@ -11,13 +11,18 @@ CREATE TABLE student_details (
 CREATE TABLE course_details (
     id INT AUTO_INCREMENT PRIMARY KEY,
     semester INT NOT NULL,
-    course_id VARCHAR(20),
     session_id ENUM('online', 'part-time', 'full-time') NOT NULL,
-    current_course VARCHAR(255) NOT NULL,
-    assignment1 DECIMAL(5,2) DEFAULT 0.00,
-    assignment2 DECIMAL(5,2) DEFAULT 0.00,
-    cat DECIMAL(5,2) DEFAULT 0.00,
-    course_grade DECIMAL(5,2) DEFAULT 0.00, 
+    course_id VARCHAR(20),
+    student_id VARCHAR(50) UNIQUE,
+    assignment1 VARCHAR(100),
+    assignment1_score DECIMAL(5,2) DEFAULT 0.00,
+    assignment2 VARCHAR(100),
+    assignment2_score DECIMAL(5,2) DEFAULT 0.00,
+    assignment3 VARCHAR(100),
+    assignment3_score DECIMAL(5,2) DEFAULT 0.00,
+    cat VARCHAR(100),
+    cat_score DECIMAL(5,2) DEFAULT 0.00,
+    final_grade DECIMAL(5,2) DEFAULT 0.00, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
