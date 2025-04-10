@@ -43,13 +43,13 @@ $courses = $stmt_courses->fetchAll(PDO::FETCH_ASSOC);
     <div class="page">
         <!-- Header -->
         <div class="header-area">
-            <div class="logo-area"><h2 class="logo">ATTENDANCE APP</h2></div>
+            <div class="logo-area"><h2 class="logo">ATTENDANCE DATA</h2></div>
             <div class="logout-area"><button id="btnLogout" class="btnlogout">LOGOUT</button></div>
         </div>
 
         <!-- Session Selector -->
         <div class="session-area">
-            <label>SESSION:</label>
+            <label>UNIT CODE:</label>
             <select id="ddlclass">
                 <option value="">SELECT COURSE</option>
                 <?php
