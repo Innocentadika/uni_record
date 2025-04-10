@@ -68,7 +68,7 @@ $courses = $stmt_courses->fetchAll(PDO::FETCH_ASSOC);
             </select>
         </div>
 
-        <!-- Course List Area -->
+        <!-- Course List -->
         <div class="classlist-area" id="classlistarea">
             <?php foreach ($courses as $course): ?>
                 <div class="classcard" data-course-id="<?php echo htmlspecialchars($course['course_id']); ?>">
@@ -84,6 +84,13 @@ $courses = $stmt_courses->fetchAll(PDO::FETCH_ASSOC);
                 <div class="title-area" id="courseTitle">Course title</div>
                 <div class="ondate-area">
                     <input type="date" id="attendanceDate">
+                </div>
+                <div class="status-select-area">
+                    <select id="bulkStatus">
+                        <option value="">Select Status</option>
+                        <option value="Present">Present</option>
+                        <option value="Absent">Absent</option>
+                    </select>
                 </div>
                 <button id="submitAttendance">Submit Attendance</button>
             </div>
@@ -130,63 +137,8 @@ $courses = $stmt_courses->fetchAll(PDO::FETCH_ASSOC);
     <input type="hidden" id="hiddenFacId" value="<?php echo htmlspecialchars($student_id); ?>">
     <input type="hidden" id="hiddenSelectedCourseID" value="-1">
 
-    <!-- Scripts -->
+    <!-- JavaScript -->
     <script src="js/jquery.js"></script>
-    <script>
-        $(document).ready(function () {
-            // Filter students by course_id
-            $('#ddlclass').on('change', function () {
-                const selectedCourse = $(this).val();
-
-                if (selectedCourse === "") {
-                    $('.student-entry').show();
-                    return;
-                }
-
-                $('.student-entry').each(function () {
-                    const courseId = $(this).data('course-id');
-                    if (courseId === selectedCourse) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
-            });
-
-            // Update student status
-            $('.btnUpdateStatus').on('click', function () {
-                const $row = $(this).closest('tr');
-                const student_id = $row.data('student-id');
-                const course_id = $row.data('course-id');
-                const session_id = $row.data('session-id');
-                const on_date = $row.data('on-date');
-                const status = $row.find('.status-select').val();
-
-                $.ajax({
-                    url: 'attendreg/update_status.php',
-                    type: 'POST',
-                    data: {
-                        student_id: student_id,
-                        course_id: course_id,
-                        session_id: session_id,
-                        on_date: on_date,
-                        status: status
-                    },
-                    success: function (response) {
-                        let res = JSON.parse(response);
-                        if (res.success) {
-                            alert("Status updated successfully.");
-                            $row.find('.status-cell').text(status);
-                        } else {
-                            alert("Error: " + res.message);
-                        }
-                    },
-                    error: function () {
-                        alert("Request failed.");
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="js/attenda_update.js"></script>
 </body>
 </html>
