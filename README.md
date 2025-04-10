@@ -18,10 +18,8 @@ CREATE TABLE course_details (
     assignment1_score DECIMAL(5,2) DEFAULT 0.00,
     assignment2 LONGBLOB,
     assignment2_score DECIMAL(5,2) DEFAULT 0.00,
-    cat1 LONGBLOB,
-    cat1_score DECIMAL(5,2) DEFAULT 0.00,
-    cat2 LONGBLOB,
-    cat2_score DECIMAL(5,2) DEFAULT 0.00,
+    cat LONGBLOB,
+    cat_score DECIMAL(5,2) DEFAULT 0.00,
     final_grade DECIMAL(5,2) DEFAULT 0.00, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
