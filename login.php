@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (password_verify($password, $user['password'])) {
                 session_start();
                 $_SESSION['student_id'] = $student_id;
-                header("Location: dashboard.php");
+                header("Location: stu_dashboard.php");
                 exit;
             } else {
                 $error_message = "Invalid password. Please try again.";
