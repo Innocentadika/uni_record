@@ -156,5 +156,6 @@ $courses = $stmt_courses->fetchAll(PDO::FETCH_ASSOC);
     <!-- JavaScript -->
     <script src="js/jquery.js"></script>
     <script src="js/attenda_update.js"></script>
+    <script src="js/logout.js"></script>
 </body>
 </html>

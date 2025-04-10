@@ -87,6 +87,6 @@ $(document).ready(function () {
 
     // Logout
     $("#btnLogout").on("click", function () {
-        window.location.href = "logout.php";
+        window.location.href = "login.php";
     });
 });
