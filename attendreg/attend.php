@@ -86,9 +86,9 @@ if(isset($_REQUEST['action']))
     if($action=="saveattendance")
     {
         //fetch the courses taken by fac in sess
-         $courseid=$_POST['courseid'];
-         $sessionid=$_POST['sessionid'];
-         $studentid=$_POST['studentid'];
+         $course_id=$_POST['course_id'];
+         $session_id=$_POST['session_id'];
+         $student_id=$_POST['student_id'];
          $facultyid=$_POST['facultyid'];
          $ondate=$_POST['ondate'];
          $status=$_POST['ispresent'];
