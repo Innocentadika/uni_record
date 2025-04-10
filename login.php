@@ -12,21 +12,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($student_id) || empty($password)) {
         $error_message = "Student ID and password are required!";
     } else {
+
         $checkQuery = "SELECT student_id, password FROM faculty_details WHERE student_id = :student_id";
         $stmt = $dbo->conn->prepare($checkQuery);
-        $stmt->execute([':student_id' => $student_id]);
+        $stmt->bindParam(':student_id', $student_id, PDO::PARAM_STR);
+        $stmt->execute();
 
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user && password_verify($password, $user['password'])) {
-            header("Location: dashboard.php"); 
-            exit;
+        if ($user) {
+            // password_verify() works with hashed passwords
+            if (password_verify($password, $user['password'])) {
+                session_start();
+                $_SESSION['student_id'] = $student_id;
+                header("Location: dashboard.php");
+                exit;
+            } else {
+                $error_message = "Invalid password. Please try again.";
+            }
         } else {
-            $error_message = "Invalid student ID or password. Please try again.";
+            $error_message = "Student ID not found.";
         }
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -53,6 +63,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <div class="form-actions">
                 <button type="submit">Login</button>
+            </div>
+            <div class="" float="right">
+                <a href="./reset_pass.php">Forgot password</a>
             </div>
 
             <?php if ($error_message != ""): ?>
