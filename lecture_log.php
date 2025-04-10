@@ -2,20 +2,20 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . "/schoolpro/database/database.php";
 
 $dbo = new Database();
-$student_id = $password = "";
+$lecturer_id = $password = "";
 $error_message = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $student_id = trim($_POST['student_id'] ?? '');
+    $lecturer_id = trim($_POST['lecturer_id'] ?? '');
     $password = trim($_POST['password'] ?? '');
 
-    if (empty($student_id) || empty($password)) {
-        $error_message = "Student ID and password are required!";
+    if (empty($lecturer_id) || empty($password)) {
+        $error_message = "lecturer ID and password are required!";
     } else {
 
-        $checkQuery = "SELECT student_id, password FROM faculty_details WHERE student_id = :student_id";
+        $checkQuery = "SELECT lecturer_id, password FROM faculty_details WHERE lecturer_id = :lecturer_id";
         $stmt = $dbo->conn->prepare($checkQuery);
-        $stmt->bindParam(':student_id', $student_id, PDO::PARAM_STR);
+        $stmt->bindParam(':lecturer_id', $lecturer_id, PDO::PARAM_STR);
         $stmt->execute();
 
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -24,14 +24,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // password_verify() works with hashed passwords
             if (password_verify($password, $user['password'])) {
                 session_start();
-                $_SESSION['student_id'] = $student_id;
+                $_SESSION['lecturer_id'] = $lecturer_id;
                 header("Location: stu_dashboard.php");
                 exit;
             } else {
                 $error_message = "Invalid password. Please try again.";
             }
         } else {
-            $error_message = "Student ID not found.";
+            $error_message = "lecturer ID not found.";
         }
     }
 }
@@ -52,8 +52,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <form id="loginForm" action="" method="POST">
             <div class="input-group">
-                <label for="student_id">Student ID:</label>
-                <input type="text" id="student_id" name="student_id" placeholder="Enter your student ID" required>
+                <label for="lecturer_id">lecturer ID:</label>
+                <input type="text" id="lecturer_id" name="lecturer_id" placeholder="Enter your lecturer ID" required>
             </div>
 
             <div class="input-group">

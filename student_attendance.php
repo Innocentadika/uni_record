@@ -47,8 +47,30 @@ $courses = $stmt_courses->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <title>Attendance Portal</title>
     <link rel="stylesheet" href="css/attendance.css">
+    <link rel="stylesheet" href="css/navb.css">
 </head>
 <body>
+
+<div>
+<div class="nvb">
+<nav class="navbar">
+    <div class="logo">MySite</div>
+    <ul class="nav-links">
+      <li><a href="./index.html">Home</a></li>
+      <li><a href="./stu_dashboard.php">Dashboard</a></li>
+      <li><a href="./student_attendance.php">Attendance</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a id="btnLogout">Logout</a></li>
+    </ul>
+    <div class="burger">
+      <div class="line1"></div>
+      <div class="line2"></div>
+      <div class="line3"></div>
+    </div>
+</nav>
+</div>
+</div>
+
     <div class="page">
         <!-- Header -->
         <div class="header-area">
@@ -157,5 +179,6 @@ $courses = $stmt_courses->fetchAll(PDO::FETCH_ASSOC);
     <script src="js/jquery.js"></script>
     <script src="js/attenda_update.js"></script>
     <script src="js/logout.js"></script>
+    <script src="js/navb.js"></script>
 </body>
 </html>
