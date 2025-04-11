@@ -2,49 +2,52 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . "/schoolpro/database/database.php";
 
 $dbo = new Database();
-$staff_id = $password = "";
+$staff_id = $new_password = $confirm_password = "";
 $error_message = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $staff_id = trim($_POST['staff_id'] ?? '');
-    $password = trim($_POST['password'] ?? '');
+    $new_password = trim($_POST['new_password'] ?? '');
+    $confirm_password = trim($_POST['confirm_password'] ?? '');
 
-    if (empty($staff_id) || empty($password)) {
-        $error_message = "staff ID and password are required!";
+    if (empty($staff_id) || empty($new_password) || empty($confirm_password)) {
+        $error_message = "All fields are required!";
+    } elseif ($new_password !== $confirm_password) {
+        $error_message = "Passwords do not match!";
     } else {
-
-        $checkQuery = "SELECT staff_id, password FROM staff_details WHERE staff_id = :staff_id";
+        // Check if the staff_id exists in the database
+        $checkQuery = "SELECT staff_id FROM staff_details WHERE staff_id = :staff_id";
         $stmt = $dbo->conn->prepare($checkQuery);
-        $stmt->bindParam(':staff_id', $staff_id, PDO::PARAM_STR);
-        $stmt->execute();
+        $stmt->execute([':staff_id' => $staff_id]);
 
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($user) {
-            // password_verify() works with hashed passwords
-            if (password_verify($password, $user['password'])) {
-                session_start();
-                $_SESSION['staff_id'] = $staff_id;
-                header("Location: registration.php");
-                exit;
-            } else {
-                $error_message = "Invalid password. Please try again.";
-            }
+        if (!$stmt->fetch()) {
+            $error_message = "Staff ID not found!";
         } else {
-            $error_message = "staff ID not found.";
+            // Hash the new password
+            $hashedPassword = password_hash($new_password, PASSWORD_DEFAULT);
+
+            try {
+                // Update password in the staff_details table
+                $updateQuery = "UPDATE staff_details SET password = :password WHERE staff_id = :staff_id";
+                $updateStmt = $dbo->conn->prepare($updateQuery);
+                $updateStmt->execute([":password" => $hashedPassword, ":staff_id" => $staff_id]);
+
+                $error_message = "Password successfully updated!";
+            } catch (PDOException $e) {
+                $error_message = "Error during password reset: " . $e->getMessage();
+            }
         }
     }
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="css/login.css">
+    <title>Password Reset</title>
+    <link rel="stylesheet" href="css/registration.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     * {
@@ -62,12 +65,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     .hed {
       background: #fff;
-      padding: 20px 60px;
+      padding: 20px 30px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: relative;
+      flex-wrap: wrap;
     }
 
     .logo {
@@ -76,11 +80,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       color: #2c3e50;
     }
 
+    .menu-toggle {
+      display: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
     nav {
       display: flex;
       align-items: center;
       gap: 30px;
-      position: relative;
     }
 
     nav a {
@@ -135,17 +144,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       display: block;
     }
 
-
+    /* Mobile Styles */
     @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
+      .menu-toggle {
+        display: block;
       }
 
       nav {
         flex-direction: column;
+        align-items: flex-start;
         gap: 10px;
         width: 100%;
+        display: none;
+        margin-top: 15px;
+      }
+
+      nav.active {
+        display: flex;
       }
 
       .dropdown-menu {
@@ -159,7 +174,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   <header class="hed">
     <div class="logo">SmartLearn</div>
-    <nav>
+    <div class="menu-toggle" id="menu-toggle">☰</div>
+    <nav id="navbar">
       <a href="./index.html">Home</a>
       <a href="#">Courses</a>
       <a href="#">About</a>
@@ -174,26 +190,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       </div>
     </nav>
   </header>
-  
-    <div class="form-container">
-        <h1>Login</h1>
 
-        <form id="loginForm" action="" method="POST">
+  <script>
+    // Toggle navigation on mobile
+    const menuToggle = document.getElementById('menu-toggle');
+    const navbar = document.getElementById('navbar');
+
+    menuToggle.addEventListener('click', () => {
+      navbar.classList.toggle('active');
+    });
+  </script>
+    <div class="form-container">
+        <h1>Reset Password</h1>
+
+        <form id="resetForm" action="" method="POST">
             <div class="input-group">
-                <label for="staff_id">staff ID:</label>
-                <input type="text" id="staff_id" name="staff_id" placeholder="Enter your staff ID" required>
+                <label for="staff_id">Registration ID:</label>
+                <input type="text" id="staff_id" name="staff_id" placeholder="Enter your registration ID" required>
             </div>
 
             <div class="input-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <label for="new_password">New Password:</label>
+                <input type="password" id="new_password" name="new_password" placeholder="Enter new password" required>
+            </div>
+
+            <div class="input-group">
+                <label for="confirm_password">Confirm Password:</label>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your new password" required>
             </div>
 
             <div class="form-actions">
-                <button type="submit">Login</button>
-            </div>
-            <div class="" float="right">
-                <a href="./staff_reset.php">Forgot password</a>
+                <button type="submit">Reset Password</button>
             </div>
 
             <?php if ($error_message != ""): ?>
@@ -206,7 +233,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   © 2025 SmartLearn. All rights reserved.
 </footer>
 
-    <script src="js/login.js"></script>
-
+    <script src="js/register.js"></script>
 </body>
 </html>

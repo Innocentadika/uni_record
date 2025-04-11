@@ -3,24 +3,24 @@ $path = $_SERVER['DOCUMENT_ROOT'];
 require_once $path . "/schoolpro/database/database.php";
 
 $dbo = new Database();
-$lecturer_id = $password = $confirm_password = $name = "";
+$lecture_id = $password = $confirm_password = $name = "";
 $error_message = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $lecturer_id = trim($_POST['lecturer_id'] ?? '');
+    $lecture_id = trim($_POST['lecture_id'] ?? '');
     $password = trim($_POST['password'] ?? '');
     $confirm_password = trim($_POST['confirm_password'] ?? '');
     $name = trim($_POST['name'] ?? '');
 
-    if (empty($lecturer_id) || empty($password) || empty($confirm_password) || empty($name)) {
+    if (empty($lecture_id) || empty($password) || empty($confirm_password) || empty($name)) {
         $error_message = "All fields are required!";
     } elseif ($password !== $confirm_password) {
         $error_message = "Passwords do not match!";
     } else {
-        // Check if lecturer_id already exists in the faculty_details table
-        $checkQuery = "SELECT lecturer_id FROM faculty_details WHERE lecturer_id = :lecturer_id";
+        // Check if lecture_id already exists in the faculty_details table
+        $checkQuery = "SELECT lecture_id FROM lecture_details WHERE lecture_id = :lecture_id";
         $stmt = $dbo->conn->prepare($checkQuery);
-        $stmt->execute([':lecturer_id' => $lecturer_id]);
+        $stmt->execute([':lecture_id' => $lecture_id]);
 
         if ($stmt->fetch()) {
             $error_message = "This faculty member is already registered!";
@@ -28,15 +28,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Hash the password before storing it in the database
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             try {
-                $insertQuery = "INSERT INTO faculty_details (lecturer_id, password, name) 
-                                VALUES (:lecturer_id, :password, :name)";
+                $insertQuery = "INSERT INTO lecture_details (lecture_id, password, name) 
+                                VALUES (:lecture_id, :password, :name)";
                 $insertStmt = $dbo->conn->prepare($insertQuery);
                 $insertStmt->execute([
-                    ":lecturer_id" => $lecturer_id,
+                    ":lecture_id" => $lecture_id,
                     ":password" => $hashedPassword,
                     ":name" => $name
                 ]);
                 $error_message = "Faculty registered successfully!";
+                
             } catch (PDOException $e) {
                 $error_message = "Error during registration: " . $e->getMessage();
             }
@@ -52,8 +53,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lecturer Faculty Registration</title>
     <link rel="stylesheet" href="css/registration.css">
+    <link rel="stylesheet" href="css/navb.css">
 </head>
 <body>
+
+<div class="nvb">
+<nav class="navbar">
+    <div class="logo">SmartLearn</div>
+    <ul class="nav-links">
+      <li><a href="./index.html">Home</a></li>
+      <li><a href="./registration.php">Dashboard</a></li>
+      <li><a href="./reg_update.php">Student update</a></li>
+      <li><a href="./reg_lecturer.php">Register lecture</a></li>
+      <li><a id="btnLogout">Logout</a></li>
+    </ul>
+    <div class="burger">
+      <div class="line1"></div>
+      <div class="line2"></div>
+      <div class="line3"></div>
+    </div>
+</nav>
+</div>
+
     <div class="form-container">
         <h1>Faculty Registration</h1>
 
@@ -64,8 +85,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <div class="input-group">
-                <label for="lecturer_id">Registration ID:</label>
-                <input type="text" id="lecturer_id" name="lecturer_id" placeholder="set registration ID" value="<?php echo htmlspecialchars($lecturer_id); ?>" required>
+                <label for="lecture_id">Registration ID:</label>
+                <input type="text" id="lecture_id" name="lecture_id" placeholder="set registration ID" value="<?php echo htmlspecialchars($lecture_id); ?>" required>
             </div>
 
             <div class="enrolment">
@@ -89,7 +110,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php endif; ?>
         </form>
     </div>
+    
+    <footer style="position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; background-color: #f1f1f1; padding: 10px;">
+  © 2025 SmartLearn. All rights reserved.
+</footer>
 
     <script src="js/register.js"></script>
+    <script src="js/navb.js"></script>
+    <script src="js/logout.js"></script>
 </body>
 </html>

@@ -1,6 +1,13 @@
 <?php
+session_start(); 
 $path = $_SERVER['DOCUMENT_ROOT'];
 require_once $path . "/schoolpro/database/database.php";
+
+// Ensure the user is logged in
+if (!isset($_SESSION['lecture_id'])) {
+    header("Location: lecture_log.php");
+    exit;
+}
 
 $dbo = new Database();
 $message = "";
@@ -66,8 +73,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Dashboard - Upload Assignments</title>
     <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/navb.css">
 </head>
 <body>
+
+<div class="nvb">
+<nav class="navbar">
+    <div class="logo">SmartLearn</div>
+    <ul class="nav-links">
+      <li><a href="./index.html">Home</a></li>
+      <li><a href="./dashboard.php">Dashboard</a></li>
+      <li><a href="./attendance.php">Attendance</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a id="btnLogout">Logout</a></li>
+    </ul>
+    <div class="burger">
+      <div class="line1"></div>
+      <div class="line2"></div>
+      <div class="line3"></div>
+    </div>
+</nav>
+</div>
+
     <div class="dashboard-container">
         <h1>Upload Assignment or CAT</h1>
 
@@ -101,6 +128,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
     </div>
 
+    <footer style="position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; background-color: #f1f1f1; padding: 10px;">
+  © 2025 SmartLearn. All rights reserved.
+</footer>
+
     <script src="js/dashboard.js"></script>
+    <script src="js/navb.js"></script>
+<script src="js/Llogout.js"></script>
 </body>
 </html>

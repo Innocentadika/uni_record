@@ -54,6 +54,15 @@
     background-color: white;
     transition: all 0.3s ease;
   }
+
+  .foot {
+    text-align: center;
+    padding: 30px;
+    background-color: #f1f1f1;
+    font-size: 0.9rem;
+    color: #777;
+    
+  }
   
   /* Mobile responsive */
   @media screen and (max-width: 768px) {
@@ -98,3 +107,4 @@
     }
   }
   
+ 

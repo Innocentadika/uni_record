@@ -101,7 +101,7 @@ if (isset($_GET['download']) && isset($_GET['type'])) {
 
 <div class="nvb">
 <nav class="navbar">
-    <div class="logo">MySite</div>
+    <div class="logo">SmartLearn</div>
     <ul class="nav-links">
       <li><a href="./index.html">Home</a></li>
       <li><a href="./stu_dashboard.php">Dashboard</a></li>
@@ -159,6 +159,10 @@ if (isset($_GET['download']) && isset($_GET['type'])) {
         </tbody>
     </table>
 </div>
+
+<footer style="position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; background-color: #f1f1f1; padding: 10px;">
+  © 2025 SmartLearn. All rights reserved.
+</footer>
 
 <script src="js/student.js"></script>
 <script src="js/navb.js"></script>

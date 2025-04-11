@@ -54,7 +54,7 @@ $courses = $stmt_courses->fetchAll(PDO::FETCH_ASSOC);
 <div>
 <div class="nvb">
 <nav class="navbar">
-    <div class="logo">MySite</div>
+    <div class="logo">SmartLearn</div>
     <ul class="nav-links">
       <li><a href="./index.html">Home</a></li>
       <li><a href="./stu_dashboard.php">Dashboard</a></li>
@@ -174,6 +174,10 @@ $courses = $stmt_courses->fetchAll(PDO::FETCH_ASSOC);
     <!-- Hidden Inputs -->
     <input type="hidden" id="hiddenFacId" value="<?php echo htmlspecialchars($student_id); ?>">
     <input type="hidden" id="hiddenSelectedCourseID" value="-1">
+
+    <footer style="position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; background-color: #f1f1f1; padding: 10px;">
+  © 2025 SmartLearn. All rights reserved.
+</footer>
 
     <!-- JavaScript -->
     <script src="js/jquery.js"></script>

@@ -9,12 +9,12 @@ echo json_encode($rv);
 
 $dbo = new Database();
 
-if (!isset($_SESSION['student_id'])) {
-    header("Location: login.php");
+if (!isset($_SESSION['lecture_id'])) {
+    header("Location: lecture_log.php");
     exit;
 }
 
-$student_id = $_SESSION['student_id'];
+$lecture_id = $_SESSION['lecture_id'];
 
 // Fetch all attendance records
 $query_sessions = "SELECT DISTINCT student_id, session_id, course_id, status, on_date FROM attendance_details";
@@ -38,8 +38,29 @@ $courses = $stmt_courses->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <title>Attendance Portal</title>
     <link rel="stylesheet" href="css/attendance.css">
+    <link rel="stylesheet" href="css/navb.css">
 </head>
 <body>
+
+<div class="nvb">
+<nav class="navbar">
+    <div class="logo">SmartLearn</div>
+    <ul class="nav-links">
+      <li><a href="./index.html">Home</a></li>
+      <li><a href="./dashboard.php">Dashboard</a></li>
+      <li><a href="./attendance.php">Attendance</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a id="btnLogout">Logout</a></li>
+    </ul>
+    <div class="burger">
+      <div class="line1"></div>
+      <div class="line2"></div>
+      <div class="line3"></div>
+    </div>
+</nav>
+</div>
+
+    <div class="">
     <div class="page">
         <!-- Header -->
         <div class="header-area">
@@ -132,14 +153,20 @@ $courses = $stmt_courses->fetchAll(PDO::FETCH_ASSOC);
             </table>
         </div>
     </div>
+    </div>
 
     <!-- Hidden Inputs -->
     <input type="hidden" id="hiddenFacId" value="<?php echo htmlspecialchars($student_id); ?>">
     <input type="hidden" id="hiddenSelectedCourseID" value="-1">
 
+    <footer style="position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; background-color: #f1f1f1; padding: 10px;">
+  © 2025 SmartLearn. All rights reserved.
+</footer>
+
     <!-- JavaScript -->
     <script src="js/jquery.js"></script>
     <script src="js/attenda_update.js"></script>
-    <script src="js/logout.js"></script>
+    <script src="js/Llogout.js"></script>
+    <script src="js/navb.js"></script>
 </body>
 </html>

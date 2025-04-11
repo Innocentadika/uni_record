@@ -31,6 +31,20 @@ CREATE TABLE faculty_details (
     password VARCHAR(255)
 );
 
+CREATE TABLE lecture_details (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    lecture_id VARCHAR(50) UNIQUE,
+    name VARCHAR(100),
+    password VARCHAR(255)
+);
+
+CREATE TABLE staff_details (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    staff_id VARCHAR(50) UNIQUE,
+    name VARCHAR(100),
+    password VARCHAR(255)
+);
+
 CREATE TABLE session_details (
     id INT AUTO_INCREMENT PRIMARY KEY,
     student_id VARCHAR(255) NOT NULL,

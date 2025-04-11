@@ -1,6 +1,13 @@
 <?php
+session_start(); 
 $path = $_SERVER['DOCUMENT_ROOT'];
 require_once $path . "/schoolpro/database/database.php";
+
+// Ensure the user is logged in
+if (!isset($_SESSION['staff_id'])) {
+    header("Location: staff_log.php");
+    exit;
+}
 
 $dbo = new Database();
 $student_id = $password = $confirm_password = $name = $course_id = $session_id = $current_course = $department = $semester = $year = "";
@@ -102,8 +109,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faculty Registration</title>
     <link rel="stylesheet" href="css/registration.css">
+    <link rel="stylesheet" href="css/navb.css">
 </head>
 <body>
+
+<div class="nvb">
+<nav class="navbar">
+    <div class="logo">SmartLearn</div>
+    <ul class="nav-links">
+      <li><a href="./index.html">Home</a></li>
+      <li><a href="./registration.php">Dashboard</a></li>
+      <li><a href="./reg_update.php">Student update</a></li>
+      <li><a href="./reg_lecturer.php">Register lecture</a></li>
+      <li><a id="btnLogout">Logout</a></li>
+    </ul>
+    <div class="burger">
+      <div class="line1"></div>
+      <div class="line2"></div>
+      <div class="line3"></div>
+    </div>
+</nav>
+</div>
+
     <div class="form-container">
         <h1>Faculty Registration</h1>
 
@@ -177,6 +204,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
     </div>
 
+    <footer style="position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; background-color: #f1f1f1; padding: 10px;">
+  © 2025 SmartLearn. All rights reserved.
+</footer>
+
     <script src="js/register.js"></script>
+    <script src="js/navb.js"></script>
+    <script src="js/logout.js"></script>
 </body>
 </html>
