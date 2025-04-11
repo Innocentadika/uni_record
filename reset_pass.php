@@ -117,7 +117,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     .dropdown-menu {
       position: absolute;
-      top: 30px;
+      top: 20px;
       right: 0;
       background-color: #fff;
       border: 1px solid #ddd;

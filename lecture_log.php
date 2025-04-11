@@ -160,7 +160,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <header class="hed">
     <div class="logo">SmartLearn</div>
     <nav>
-      <a href="#">Home</a>
+      <a href="./index.html">Home</a>
       <a href="#">Courses</a>
       <a href="#">About</a>
       <a href="#">Contact</a>
