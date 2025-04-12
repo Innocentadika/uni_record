@@ -1,7 +1,6 @@
 <?php
-session_start(); 
-$path = $_SERVER['DOCUMENT_ROOT'];
-require_once $path . "/schoolpro/database/database.php";
+session_start();
+require_once $_SERVER['DOCUMENT_ROOT'] . "/uni_record/database/database.php";
 
 // Ensure the user is logged in
 if (!isset($_SESSION['lecture_id'])) {

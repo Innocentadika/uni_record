@@ -1,7 +1,6 @@
 <?php
 session_start();
-$path = $_SERVER['DOCUMENT_ROOT'];
-require_once $path . "/schoolpro/database/database.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/uni_record/database/database.php";
 
 unset($_SESSION["current_user"]);
 $rv = [];
@@ -17,15 +16,13 @@ if (!isset($_SESSION['lecture_id'])) {
 $lecture_id = $_SESSION['lecture_id'];
 
 // Fetch all attendance records
-$query_sessions = "SELECT DISTINCT student_id, session_id, course_id, status, on_date FROM attendance_details";
+$query_sessions = "SELECT DISTINCT student_id, session_id, course_id, name, status, on_date FROM attendance_details";
 $stmt_sessions = $dbo->conn->prepare($query_sessions);
 $stmt_sessions->execute();
 $sessions = $stmt_sessions->fetchAll(PDO::FETCH_ASSOC);
 
 // Fetch unique courses for the student
-$query_courses = "SELECT DISTINCT course_id, current_course 
-                  FROM course_registration 
-                  WHERE student_id = :student_id";
+$query_courses = "SELECT DISTINCT course_id, current_course  FROM course_registration  WHERE student_id = :student_id";
 $stmt_courses = $dbo->conn->prepare($query_courses);
 $stmt_courses->bindParam(':student_id', $student_id);
 $stmt_courses->execute();
@@ -70,7 +67,7 @@ $courses = $stmt_courses->fetchAll(PDO::FETCH_ASSOC);
 
         <!-- Session Selector -->
         <div class="session-area">
-            <label>UNIT CODE:</label>
+            <label for="">UNIT CODE:</label>
             <select id="ddlclass">
                 <option value="">SELECT COURSE</option>
                 <?php
@@ -101,7 +98,6 @@ $courses = $stmt_courses->fetchAll(PDO::FETCH_ASSOC);
         <!-- Class Details -->
         <div class="classdetails-area" id="classdetailsarea">
             <div class="classdetails">
-                <div class="code-area" id="courseCode">Select a course</div>
                 <div class="title-area" id="courseTitle">Course title</div>
                 <div class="ondate-area">
                     <input type="date" id="attendanceDate">
@@ -119,10 +115,11 @@ $courses = $stmt_courses->fetchAll(PDO::FETCH_ASSOC);
 
         <!-- Student List -->
         <div class="studentlist-area" id="studentlistarea">
-            <label>STUDENT LIST</label>
+            <label for="">STUDENT LIST</label>
             <table class="student-table" id="studentDetails">
                 <thead>
                     <tr>
+                        <th>Name</th>
                         <th>Student ID</th>
                         <th>Session ID</th>
                         <th>Status</th>
@@ -135,8 +132,10 @@ $courses = $stmt_courses->fetchAll(PDO::FETCH_ASSOC);
                             data-course-id="<?php echo htmlspecialchars($session['course_id']); ?>"
                             data-session-id="<?php echo htmlspecialchars($session['session_id']); ?>"
                             data-student-id="<?php echo htmlspecialchars($session['student_id']); ?>"
+                            data-student-id="<?php echo htmlspecialchars($session['name']); ?>"
                             data-on-date="<?php echo htmlspecialchars($session['on_date']); ?>">
 
+                            <td><?php echo htmlspecialchars($session['name']); ?></td>
                             <td><?php echo htmlspecialchars($session['student_id']); ?></td>
                             <td><?php echo htmlspecialchars($session['session_id']); ?></td>
                             <td class="status-cell"><?php echo htmlspecialchars($session['status']); ?></td>

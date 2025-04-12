@@ -69,6 +69,7 @@ CREATE TABLE course_allotment (
 
 CREATE TABLE attendance_details (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
     course_id VARCHAR(20) NOT NULL,
     session_id ENUM('online', 'part-time', 'full-time') NOT NULL,
     student_id VARCHAR(50) NOT NULL,

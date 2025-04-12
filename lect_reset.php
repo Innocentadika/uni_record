@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . "/schoolpro/database/database.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/uni_record/database/database.php";
 
 $dbo = new Database();
 $lecture_id = $new_password = $confirm_password = "";

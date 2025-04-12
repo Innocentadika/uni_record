@@ -1,7 +1,7 @@
 <?php
-session_start(); 
+session_start();
 $path = $_SERVER['DOCUMENT_ROOT'];
-require_once $path . "/schoolpro/database/database.php";
+require_once $path . "/uni_record/database/database.php";
 
 // Ensure the user is logged in
 if (!isset($_SESSION['staff_id'])) {
@@ -64,28 +64,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $dbo->conn->beginTransaction();
 
                 // Insert into faculty_details
-                $facultyInsert = "INSERT INTO faculty_details (student_id, password, name) 
-                                  VALUES (:student_id, :password, :name)";
+                $facultyInsert = "INSERT INTO faculty_details (student_id, password, name) VALUES (:student_id, :password, :name)";
                 $facultyStmt = $dbo->conn->prepare($facultyInsert);
                 $facultyStmt->execute([":student_id" => $student_id, ":password" => $hashedPassword, ":name" => $name]);
 
                 // Insert into student_details (this seems to be for student-specific data)
-                $studentInsert = "INSERT INTO student_details (student_id, roll_no, name) 
-                                  VALUES (:student_id, :student_id, :name)";
+                $studentInsert = "INSERT INTO student_details (student_id, roll_no, name) VALUES (:student_id, :student_id, :name)";
                 $studentStmt = $dbo->conn->prepare($studentInsert);
                 $studentStmt->execute([":student_id" => $student_id, ":name" => $name]);
 
                 // Insert into course_registration
-                $courseInsert = "INSERT INTO course_registration (student_id, course_id, session_id, current_course, department) 
-                                 VALUES (:student_id, :course_id, :session_id, :current_course, :department)";
+                $courseInsert = "INSERT INTO course_registration (student_id, course_id, session_id, current_course, department) VALUES (:student_id, :course_id, :session_id, :current_course, :department)";
                 $courseStmt = $dbo->conn->prepare($courseInsert);
                 $courseStmt->execute([":student_id" => $student_id, ":course_id" => $course_id, ":session_id" => $session_id, ":current_course" => $current_course, ":department" => $department]);
 
                 // Insert into attendance_details
-                $attendanceInsert = "INSERT INTO attendance_details (course_id, session_id, student_id, on_date, status) 
-                                     VALUES (:course_id, :session_id, :student_id, CURDATE(), 'PRESENT')";
+                $attendanceInsert = "INSERT INTO attendance_details (course_id, session_id, student_id, name, on_date, status) VALUES (:course_id, :session_id, :student_id, :name, CURDATE(), 'PRESENT')";
                 $attendanceStmt = $dbo->conn->prepare($attendanceInsert);
-                $attendanceStmt->execute([":student_id" => $student_id, ":course_id" => $course_id, ":session_id" => $session_id]);
+                $attendanceStmt->execute([":student_id" => $student_id, ":course_id" => $course_id, ":session_id" => $session_id, ":name" => $name]);
 
                 // Check if course_details exists for the same student_id and session_id
                 $checkCourse = "SELECT 1 FROM course_details WHERE student_id = :student_id AND session_id = :session_id";
@@ -93,15 +89,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $checkCourseStmt->execute([":student_id" => $student_id, ":session_id" => $session_id]);
 
                 if (!$checkCourseStmt->fetch()) {
-                    $courseDetailsInsert = "INSERT INTO course_details (semester, course_id, session_id, student_id) 
-                                            VALUES (:semester, :course_id, :session_id, :student_id)";
+                    $courseDetailsInsert = "INSERT INTO course_details (semester, course_id, session_id, student_id) VALUES (:semester, :course_id, :session_id, :student_id)";
                     $courseDetailsStmt = $dbo->conn->prepare($courseDetailsInsert);
                     $courseDetailsStmt->execute([":semester" => $semester, ":course_id" => $course_id, ":session_id" => $session_id, ":student_id" => $student_id]);
                 }
 
                 // Insert into session_details
-                $sessionInsert = "INSERT INTO session_details (semester, year, student_id) 
-                                  VALUES (:semester, :year, :student_id)";
+                $sessionInsert = "INSERT INTO session_details (semester, year, student_id) VALUES (:semester, :year, :student_id)";
                 $sessionStmt = $dbo->conn->prepare($sessionInsert);
                 $sessionStmt->execute([":semester" => $semester, ":year" => $year, ":student_id" => $student_id]);
 

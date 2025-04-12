@@ -1,7 +1,7 @@
 <?php
 session_start();
 $path = $_SERVER['DOCUMENT_ROOT'];
-require_once $path . "/schoolpro/database/database.php";
+require_once $path . "/uni_record/database/database.php";
 
 $dbo = new Database();
 
@@ -22,8 +22,8 @@ $stmt_user->execute();
 $current_user = $stmt_user->fetch(PDO::FETCH_ASSOC);
 
 // Fetch all attendance records for the logged-in student
-$query_sessions = "SELECT DISTINCT student_id, session_id, course_id, status, on_date 
-                   FROM attendance_details 
+$query_sessions = "SELECT DISTINCT student_id, session_id, course_id, status, on_date
+                   FROM attendance_details
                    WHERE student_id = :student_id"; // Filter by student_id
 $stmt_sessions = $dbo->conn->prepare($query_sessions);
 $stmt_sessions->bindParam(':student_id', $student_id);
@@ -31,8 +31,8 @@ $stmt_sessions->execute();
 $sessions = $stmt_sessions->fetchAll(PDO::FETCH_ASSOC);
 
 // Fetch unique courses for the student
-$query_courses = "SELECT DISTINCT course_id, current_course 
-                  FROM course_registration 
+$query_courses = "SELECT DISTINCT course_id, current_course
+                  FROM course_registration
                   WHERE student_id = :student_id";
 $stmt_courses = $dbo->conn->prepare($query_courses);
 $stmt_courses->bindParam(':student_id', $student_id);
@@ -87,7 +87,7 @@ $courses = $stmt_courses->fetchAll(PDO::FETCH_ASSOC);
         
         <!-- Session Selector -->
         <div class="session-area">
-            <label>UNIT CODE:</label>
+            <label for="">UNIT CODE:</label>
             <select id="ddlclass">
                 <option value="">MY UNIT</option>
                 <?php
@@ -136,7 +136,7 @@ $courses = $stmt_courses->fetchAll(PDO::FETCH_ASSOC);
 
         <!-- Student List -->
         <div class="studentlist-area" id="studentlistarea">
-            <label>STUDENT DETAILS</label>
+            <label for="">STUDENT DETAILS</label>
             <table class="student-table" id="studentDetails">
                 <thead>
                     <tr>
