@@ -10,6 +10,22 @@ if (!isset($_SESSION['lecture_id'])) {
 }
 
 $dbo = new Database();
+
+// Fetch current staff details
+$files = [];
+$current_user = null;
+
+$lecture_id = $_SESSION['lecture_id'] ?? '';
+
+try {
+    $stmt = $dbo->conn->prepare("SELECT name, lecture_id FROM lecture_details WHERE lecture_id = :lecture_id");
+    $stmt->execute([':lecture_id' => $lecture_id]);
+    $current_user = $stmt->fetch(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Error fetching lecturer details: " . $e->getMessage());
+}
+// end Fetch current staff details
+
 $message = "";
 
 // Fetch available course_id values
@@ -93,6 +109,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="line3"></div>
     </div>
 </nav>
+</div>
+
+<div class="user-area">
+    <?php if ($current_user): ?>
+        <p class="user-welcome">Welcome, <strong><?php echo htmlspecialchars($current_user['name']); ?></strong> (<?php echo htmlspecialchars($current_user['lecture_id']); ?>)</p>
+    <?php endif; ?>
 </div>
 
     <div class="dashboard-container">
