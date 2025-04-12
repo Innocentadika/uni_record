@@ -268,6 +268,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update'])) {
 
     <script src="js/register.js"></script>
     <script src="js/navb.js"></script>
-    <script src="js/logout.js"></script>
+    <script src="js/Slogout.js"></script>
 </body>
 </html>
