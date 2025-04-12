@@ -117,6 +117,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <script src="js/register.js"></script>
     <script src="js/navb.js"></script>
-    <script src="js/logout.js"></script>
+    <script src="js/Slogout.js"></script>
 </body>
 </html>
