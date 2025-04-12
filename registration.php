@@ -10,6 +10,22 @@ if (!isset($_SESSION['staff_id'])) {
 }
 
 $dbo = new Database();
+
+// Fetch current staff details
+$files = [];
+$current_user = null;
+
+$staff_id = $_SESSION['staff_id'] ?? '';
+
+try {
+    $stmt = $dbo->conn->prepare("SELECT name, staff_id FROM staff_details WHERE staff_id = :staff_id");
+    $stmt->execute([':staff_id' => $staff_id]);
+    $current_user = $stmt->fetch(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Error fetching staff details: " . $e->getMessage());
+}
+// end Fetch current staff details
+
 $student_id = $password = $confirm_password = $name = $course_id = $session_id = $current_course = $department = $semester = $year = "";
 $error_message = "";
 
@@ -131,6 +147,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </nav>
 </div>
 
+<div class="user-area">
+    <?php if ($current_user): ?>
+        <p class="user-welcome">Welcome, <strong><?php echo htmlspecialchars($current_user['name']); ?></strong> (<?php echo htmlspecialchars($current_user['staff_id']); ?>)</p>
+    <?php endif; ?>
+</div>
+
     <div class="form-container">
         <h1>Faculty Registration</h1>
 
@@ -210,6 +232,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <script src="js/register.js"></script>
     <script src="js/navb.js"></script>
-    <script src="js/logout.js"></script>
+    <script src="js/Slogout.js"></script>
 </body>
 </html>
